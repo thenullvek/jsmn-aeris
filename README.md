@@ -3,12 +3,12 @@ JSMN2
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/WyZ9Bj3QC36K6x6gjqCkfi/BrpYUzNfmeAsbTBn5bq95T/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/WyZ9Bj3QC36K6x6gjqCkfi/BrpYUzNfmeAsbTBn5bq95T/tree/master) [![codecov](https://codecov.io/gh/thenullvek/jsmn2/branch/master/graph/badge.svg)](https://codecov.io/gh/thenullvek/jsmn2)
 
-jsmn (pronounced like 'jasmine') is a minimalistic JSON parser in C.  It can be
+jsmn2 (pronounced like 'jasmine') is a minimalistic JSON parser in C.  It can be
 easily integrated into resource-limited or embedded projects.
 
 You can find more information about JSON format at [json.org][1]
 
-Library sources are available at https://github.com/zserge/jsmn
+The original source code is available at https://github.com/zserge/jsmn
 
 The web page with some information about jsmn can be found at
 [http://zserge.com/jsmn.html][2]
@@ -32,10 +32,8 @@ other projects.
 Features
 --------
 
-* compatible with C89
 * no dependencies (even libc!)
 * highly portable (tested on x86/amd64, ARM, AVR)
-* about 200 lines of code
 * extremely small code footprint
 * API contains only 2 functions
 * no dynamic memory allocation
@@ -76,101 +74,6 @@ object hierarchy.
 This approach provides enough information for parsing any JSON data and makes
 it possible to use zero-copy techniques.
 
-Usage
------
-
-Download `jsmn.h`, include it, done.
-
-```
-#include "jsmn.h"
-
-...
-jsmn_parser p;
-jsmntok_t t[128]; /* We expect no more than 128 JSON tokens */
-
-jsmn_init(&p);
-r = jsmn_parse(&p, s, strlen(s), t, 128); // "s" is the char array holding the json content
-```
-
-Since jsmn is a single-header, header-only library, for more complex use cases
-you might need to define additional macros. `#define JSMN_STATIC` hides all
-jsmn API symbols by making them static. Also, if you want to include `jsmn.h`
-from multiple C files, to avoid duplication of symbols you may define  `JSMN_HEADER` macro.
-
-```
-/* In every .c file that uses jsmn include only declarations: */
-#define JSMN_HEADER
-#include "jsmn.h"
-
-/* Additionally, create one jsmn.c file for jsmn implementation: */
-#include "jsmn.h"
-```
-
-API
----
-
-Token types are described by `jsmntype_t`:
-
-	typedef enum {
-		JSMN_UNDEFINED = 0,
-		JSMN_OBJECT = 1 << 0,
-		JSMN_ARRAY = 1 << 1,
-		JSMN_STRING = 1 << 2,
-		JSMN_PRIMITIVE = 1 << 3
-	} jsmntype_t;
-
-**Note:** Unlike JSON data types, primitive tokens are not divided into
-numbers, booleans and null, because one can easily tell the type using the
-first character:
-
-* <code>'t', 'f'</code> - boolean 
-* <code>'n'</code> - null
-* <code>'-', '0'..'9'</code> - number
-
-Token is an object of `jsmntok_t` type:
-
-	typedef struct {
-		jsmntype_t type; // Token type
-		int start;       // Token start position
-		int end;         // Token end position
-		int size;        // Number of child (nested) tokens
-	} jsmntok_t;
-
-**Note:** string tokens point to the first character after
-the opening quote and the previous symbol before final quote. This was made 
-to simplify string extraction from JSON data.
-
-All job is done by `jsmn_parser` object. You can initialize a new parser using:
-
-	jsmn_parser parser;
-	jsmntok_t tokens[10];
-
-	jsmn_init(&parser);
-
-	// js - pointer to JSON string
-	// tokens - an array of tokens available
-	// 10 - number of tokens available
-	jsmn_parse(&parser, js, strlen(js), tokens, 10);
-
-This will create a parser, and then it tries to parse up to 10 JSON tokens from
-the `js` string.
-
-A non-negative return value of `jsmn_parse` is the number of tokens actually
-used by the parser.
-Passing NULL instead of the tokens array would not store parsing results, but
-instead the function will return the number of tokens needed to parse the given
-string. This can be useful if you don't know yet how many tokens to allocate.
-
-If something goes wrong, you will get an error. Error will be one of these:
-
-* `JSMN_ERROR_INVAL` - bad token, JSON string is corrupted
-* `JSMN_ERROR_NOMEM` - not enough tokens, JSON string is too large
-* `JSMN_ERROR_PART` - JSON string is too short, expecting more JSON data
-
-If you get `JSMN_ERROR_NOMEM`, you can re-allocate more tokens and call
-`jsmn_parse` once more.  If you read json data from the stream, you can
-periodically call `jsmn_parse` and check if return value is `JSMN_ERROR_PART`.
-You will get this error until you reach the end of JSON data.
 
 Other info
 ----------
@@ -179,4 +82,3 @@ This software is distributed under [MIT license](http://www.opensource.org/licen
  so feel free to integrate it in your commercial products.
 
 [1]: http://www.json.org/
-[2]: http://zserge.com/jsmn.html
