@@ -1,4 +1,4 @@
-#include "../jsmn.h"
+#include "../jsmn2.h"
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

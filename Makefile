@@ -14,36 +14,36 @@ endif
 
 CFLAGS+=-Wall
 
-TEST_LINKS_TARGET="tests/coverage-test-links"
-TEST_DEF_TARGET="tests/coverage-test-default"
+TEST_LINKS_TARGET=tests/coverage-test-links
+TEST_DEF_TARGET=tests/coverage-test-default
 
 test: test_default test_links 
-test_default: tests/tests.c jsmn.c
+test_default: tests/tests.c jsmn2.c
 	$(CC) -g -DJSMN_TESTMODE $(CFLAGS) $(LDFLAGS) $^ -o tests/$@
 	./tests/$@
-test_links: tests/tests.c jsmn.c
+test_links: tests/tests.c jsmn2.c
 	$(CC) -g -DJSMN_TESTMODE -DJSMN_PARENT_LINKS=1 $(CFLAGS) $(LDFLAGS) $^ -o tests/$@
 	./tests/$@
 
-simple_example: example/simple.c jsmn.c
+simple_example: example/simple.c jsmn2.c
 	$(CC) $(LDFLAGS) $^ -o $@
 
-jsondump: example/jsondump.c jsmn.c
+jsondump: example/jsondump.c jsmn2.c
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 fmt:
-	clang-format -i jsmn.h tests/*.[ch] example/*.[ch]
+	clang-format -i jsmn2.h tests/*.[ch] example/*.[ch]
 
 lint:
-	clang-tidy jsmn.h --checks='*'
+	clang-tidy jsmn2.h --checks='*'
 
 coverage: coverage-test.txt
-$(TEST_LINKS_TARGET): tests/tests.c jsmn.c
+$(TEST_LINKS_TARGET): tests/tests.c jsmn2.c
 	$(CC) -DJSMN_TESTMODE -DJSMN_PARENT_LINKS=1 -O0 -g $(CFLAGS) \
 		-fprofile-instr-generate \
 		-fcoverage-mapping  $(LDFLAGS) $^ -o $@
 
-$(TEST_DEF_TARGET): tests/tests.c jsmn.c
+$(TEST_DEF_TARGET): tests/tests.c jsmn2.c
 	$(CC) -DJSMN_TESTMODE -O0 -g $(CFLAGS) \
 		-fprofile-instr-generate \
 		-fcoverage-mapping  $(LDFLAGS) $^ -o $@
@@ -56,7 +56,7 @@ jsmn-default.profraw: tests/coverage-test-default
 
 coverage-test.txt: jsmn-links.profraw jsmn-default.profraw
 	$(LLVM_PROFDATA) merge $^ -o default.profdata
-	$(LLVM_COV) export -ignore-filename-regex=\(tests)/.* \
+	$(LLVM_COV) export -ignore-filename-regex=\(tests\)/.* \
 		--instr-profile default.profdata --format lcov \
 		-object tests/coverage-test-default -object tests/coverage-test-links > $@
 

@@ -1,7 +1,7 @@
 #ifndef __TEST_UTIL_H__
 #define __TEST_UTIL_H__
 
-#include "../jsmn.h"
+#include "../jsmn2.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>

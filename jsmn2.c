@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-#include "jsmn.h"
+#include "jsmn2.h"
 
 static inline void jsmn_init_token(jsmntok_t *tok)
 {
