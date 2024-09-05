@@ -1,7 +1,7 @@
 JSMN2
 ====
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/WyZ9Bj3QC36K6x6gjqCkfi/6Ju78j2JT6SLRb9rhTm31X/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/WyZ9Bj3QC36K6x6gjqCkfi/6Ju78j2JT6SLRb9rhTm31X/tree/master) [![codecov](https://codecov.io/gh/thenullvek/jsmn2/branch/master/graph/badge.svg)](https://codecov.io/gh/thenullvek/jsmn2)
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/WyZ9Bj3QC36K6x6gjqCkfi/BrpYUzNfmeAsbTBn5bq95T/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/WyZ9Bj3QC36K6x6gjqCkfi/BrpYUzNfmeAsbTBn5bq95T/tree/master) [![codecov](https://codecov.io/gh/thenullvek/jsmn2/branch/master/graph/badge.svg)](https://codecov.io/gh/thenullvek/jsmn2)
 
 jsmn (pronounced like 'jasmine') is a minimalistic JSON parser in C.  It can be
 easily integrated into resource-limited or embedded projects.
