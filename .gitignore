@@ -1,0 +1,11 @@
+.DS_Store
+*.dSYM
+jsondump
+/test/test_*
+*.profdata
+*.profraw
+coverage-test.txt
+test/coverage-*
+test*.json
+.vscode
+

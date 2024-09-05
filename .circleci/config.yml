@@ -1,0 +1,29 @@
+version: 2.1
+orbs:
+  codecov: codecov/codecov@4.1.0
+
+jobs:
+  coverage-test-macos:
+    macos:
+      xcode: 14.2.0
+    steps:
+      - checkout
+      - run:
+          name: Install llvm
+          command: brew install llvm
+      - run:
+          name: Build and run coverage test
+          command: CI_BUILD_MACOS=1 make coverage
+      - run:
+          name: Fix validation error for codecov
+          command: mkdir -p ~/.gnupg
+      - codecov/upload:
+          file: 'coverage-test.txt'
+          cli_args: '-v'
+
+workflows:
+  version: 2.1
+  build-coverage:
+    jobs:
+      - coverage-test-macos
+
