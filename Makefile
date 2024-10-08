@@ -37,7 +37,7 @@ fmt:
 lint:
 	clang-tidy jsmn2.h --checks='*'
 
-coverage: coverage-test.txt
+coverage: links.info default.info
 $(TEST_LINKS_TARGET): tests/tests.c jsmn2.c
 	$(CC) -DJSMN_TESTMODE -DJSMN_PARENT_LINKS=1 -O0 -g $(CFLAGS) \
 		-fprofile-instr-generate \
@@ -54,11 +54,19 @@ jsmn-links.profraw: tests/coverage-test-links
 jsmn-default.profraw: tests/coverage-test-default
 	LLVM_PROFILE_FILE="$@" $<
 
-coverage-test.txt: jsmn-links.profraw jsmn-default.profraw
-	$(LLVM_PROFDATA) merge $^ -o default.profdata
-	$(LLVM_COV) export -ignore-filename-regex=\(tests\)/.* \
-		--instr-profile default.profdata --format lcov \
-		-object tests/coverage-test-default -object tests/coverage-test-links > $@
+links.info: jsmn-links.profraw
+	$(LLVM_PROFDATA) merge $^ -o jsmn-links.profdata
+	$(LLVM_COV) export -ignore-filename-regex "tests/.*" \
+		--instr-profile jsmn-links.profdata --format lcov \
+		-object tests/coverage-test-links > $@
+	rm -f jsmn-links.profdata
+
+default.info: jsmn-default.profraw
+	$(LLVM_PROFDATA) merge $^ -o jsmn-default.profdata
+	$(LLVM_COV) export -ignore-filename-regex "tests/.*" \
+		--instr-profile jsmn-default.profdata --format lcov \
+		-object tests/coverage-test-default > $@
+	rm -f jsmn-default.profdata
 
 clean:
 	rm -f *.o example/*.o
@@ -68,7 +76,7 @@ clean:
 	rm -rf *.dSYM
 	rm -rf tests/*.dSYM
 	rm -rf tests/coverage-*
-	rm -f *.prof* coverage-test.txt
+	rm -f *.prof* *.info
 	rm -f $(TEST_DEF_TARGET) $(TEST_LINKS_TARGET)
 
 .PHONY: clean test coverage

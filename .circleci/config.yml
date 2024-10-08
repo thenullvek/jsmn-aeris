@@ -15,10 +15,19 @@ jobs:
           name: Build and run coverage test
           command: CI_BUILD_MACOS=1 make coverage
       - run:
+          name: Checkout lcovmerge
+          command: git clone https://github.com/thenullvek/lcovmerge.git lcovmerge
+      - run:
+          name: Build lcovmerge
+          command: make -C lcovmerge config=release
+      - run:
+          name: Merge coverage reports
+          command: ./lcovmerge/build/release/lcovmerge -o coverage.info default.info links.info
+      - run:
           name: Fix validation error for codecov
           command: mkdir -p ~/.gnupg
       - codecov/upload:
-          file: 'coverage-test.txt'
+          file: 'coverage.info'
           cli_args: '-v'
 
 workflows:
